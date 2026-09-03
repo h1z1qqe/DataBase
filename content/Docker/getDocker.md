@@ -35,9 +35,9 @@
         - `sudo systemctl status docker`
         - `sudo docker run hello-world`
         - `reboot`
-    - **Alt Linux**
+    - **Alt Linux 11**
         - `su-`
-        - `apt-get install docker-engine docker-compose-v2`
+        - `apt-get install docker-engine docker-compose`
         - `usermod ИМЯ_ПОЛЬЗОВАТЕЛЯ -aG docker`
         - `systemctl enable --now docker`
         - `reboot`
@@ -430,6 +430,10 @@ docker container prune
 ```shell
 docker rm $(docker ps -aq)
 ```
+Артефакты и свободное место:
+```shell
+docker buildx du
+```
 
 ### Prune - Удаляйте ненужные контейнеры чтобы не засорять ваш Docker!
 
@@ -483,3 +487,5 @@ docker image prune -a
 ```shell
 docker rmi -f $(docker images -q)
 ```
+
+> Если вы обнаружили ошибку в этом тексте - сообщите пожалуйста автору!

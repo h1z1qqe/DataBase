@@ -133,6 +133,10 @@ git restore README.md
 
 ### 7. Подготовить файлы к коммиту (добавить)
 
+> Никогда в разработке не используйте русские имена файлов и каталогов!
+
+> Никогда в разработке не используйте пробелы и спецюсимволы в именах файлов и каталогов!
+
 добавить все файлы и папки, включая скрытые
 ```shell
 git add .
@@ -160,6 +164,8 @@ git commit -m "Some message"
 ```shell
 git commit -a -m 'Update README.md'
 ```
+
+> Текст коммита лучше писать по-английски!
 
 или
 ```shell
@@ -368,4 +374,20 @@ git merge anybranch
 - [Pull Request](/content/Git/Pull_Request.md)
 
 ### Внешние ресурсы по Git
+
 - [Что такое Git для Начинающих _ GitHub за 30 минут _ Git Уроки](https://rutube.ru/video/fb1165ca1e4f06a0079d9f8a58e68f5c/)
+- [Pro Git book(рус.)](https://git-scm.com/book/ru/v2)
+- []()
+- []()
+
+### Мэмы по Git
+
+![Какой-то текст](/content/Git/img/1.jpg)
+
+![Какой-то текст](/content/Git/img/2.jpg)
+
+![Какой-то текст](/content/Git/img/3.jpg)
+
+![Какой-то текст](/content/Git/img/4.jpg)
+
+> Если вы обнаружили ошибку в этом тексте - сообщите пожалуйста автору!

@@ -1,208 +1,173 @@
 ## Docker compose конетейнеры c MySQL + phpMyAdmin
 
-### Процесс создания Docker проекта MySql+phpMyAdmin
+**phpMyAdmin** — веб‑приложение с открытым исходным кодом на **PHP** для администрирования **MySQL/MariaDB** через браузер. Предоставляет графический интерфейс для управления базами данных без необходимости писать **SQL**‑команды вручную.
 
-1. Создать папку `Dockers` для хранения всех Docker проектов
-1. Открыть папку `Dockers` в VS Code
-1. Создать в папке Dockers папку `mysql-phpmyadmin`
-1. В папке mysql-phpmyadmin средствами VS Code создать пустой файл `docker-compose.yml`
-1. Вставить код в файл `docker-compose.yml`
-1. Войти в папку `mysql-phpmyadmin` с командной строки
-1. Выполнить скрипт инициализации базы данных SQL
-1. Установить и запустить Docker Composer командой: `docker compose up -d`
-1. Если установка и запуск прошли успешно, то войти в браузере по адресу `http://localhost:8081/` в админ-панель **phpMyAdmin**
+### 1. Создание каталога проекта
 
-Создаём папку проекта
+Перед началом работы над этим проектом, проверье другие запущенные у вас **docker-compose** приложения:
 ```shell
-mkdir mysql-phpmyadmin
+docker compose ls
+```
+их лучше остановить, чтобы снизить риск возникновения конфликтов использования портов!
+
+Структура проекта
+```
+mysql-pma-app/
+└──compose.yaml
 ```
 
-Переходим в папку проекта
+Создать структуру проекта можно одной bash-командой:
 ```shell
-cd mysql-phpmyadmin
+mkdir -p mysql-pma-app && touch mysql-pma-app/compose.yaml && cd mysql-pma-app
 ```
 
-Создаём и редактируем файл настроек композера
-```shell
-micro docker-compose.yml
-```
-
-> Перед созданием проекта убедитесь, что порт 8081 не занят другим приложением!
-
-Посмотреть все проброшенные порты
-```shell
-docker ps --format "table {{.Names}}\t{{.Ports}}"
-```
-Или подробно для конкретного Docker-приложения
-```shell
-docker port my-website
-```
-
-Файл настроек композера
+### 2. Файл настроек композера `compose.yml`
 ```yml
 services:
-  # MySQL Database
+  # Сервис базы данных MySQL
   mysql:
+    # Используем официальный образ MySQL 8.0
     image: mysql:8.0
-    container_name: mysql-db
+    # Контейнер будет автоматически перезапускаться, если он остановился или упал
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword      # Пароль root пользователя
-      MYSQL_DATABASE: mydatabase             # База данных по умолчанию
-      MYSQL_USER: myuser                     # Дополнительный пользователь
-      MYSQL_PASSWORD: mypassword             # Пароль пользователя
+      # Обязательные переменные окружения для MySQL
+      MYSQL_ROOT_PASSWORD: root       # Пароль для root-пользователя
+      MYSQL_DATABASE: my_database     # Имя базы данных, которая будет создана автоматически
+      MYSQL_USER: my_user             # Имя дополнительного пользователя
+      MYSQL_PASSWORD: my_password     # Пароль для дополнительного пользователя
     ports:
-      - "3306:3306"                          # Порт MySQL
+      # Пробрасываем порт 3306 хоста на порт 3306 в контейнере
+      - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql           # Сохраняем данные БД
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql  # SQL скрипты
-    restart: unless-stopped
+      # Сохраняем данные базы данных в Docker-томе для персистентности
+      - mysql_data:/var/lib/mysql
     networks:
-      - db-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 30s
-      timeout: 20s
-      retries: 10
-      start_period: 40s
-  # phpMyAdmin Web Interface
+      - mysql-pma-network
+
+  # Сервис phpMyAdmin
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin-web
-    environment:
-      PMA_HOST: mysql                        # Имя сервиса MySQL
-      PMA_PORT: 3306                         # Порт MySQL
-      PMA_ARBITRARY: 1                       # Разрешить подключение к любому серверу
-      UPLOAD_LIMIT: 100M                     # Лимит загрузки файлов
-    ports:
-      - "8081:80"                            # phpMyAdmin будет на порту 8081
+    # Зависит от сервиса mysql, запустится после его готовности
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
+    # Используем официальный образ phpMyAdmin
+    image: phpmyadmin/phpmyadmin:latest
+    # Пробрасываем порт 8083 на хосте на порт 80 в контейнере
+    ports:
+      - "8083:80"
     restart: unless-stopped
+    environment:
+      # Переменные для подключения к серверу базы данных
+      PMA_HOST: mysql        # Имя хоста MySQL-сервера (совпадает с именем сервиса)
+      PMA_PORT: 3306         # Порт MySQL-сервера
+      PMA_ARBITRARY: 1       # Разрешает подключаться к произвольному серверу, не только к mysql (полезно для отладки)
+      UPLOAD_LIMIT: 300M     # Увеличивает лимит на загрузку файлов (для больших SQL-дампов)
     networks:
-      - db-network
+      - mysql-pma-network
+
+# Определяем общую сеть для связи контейнеров
 networks:
-  db-network:
-    driver: bridge
+  mysql-pma-network:
+
+# Определяем Docker-том для хранения данных базы данных
 volumes:
   mysql_data:
-    driver: local
 ```
 
-Создаем SQL скрипт для инициализации (опционально)
+### 3. Установка и запуск проекта
 
-```shell
-mkdir mysql
-cat > mysql/init.sql << 'EOF'
--- Создаем дополнительную базу данных
-CREATE DATABASE IF NOT EXISTS test_db;
-
--- Создаем пользователя с правами
-CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'app_password';
-GRANT ALL PRIVILEGES ON test_db.* TO 'app_user'@'%';
-FLUSH PRIVILEGES;
-
--- Создаем тестовую таблицу
-USE test_db;
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Добавляем тестовые данные
-INSERT IGNORE INTO users (name, email) VALUES
-('Иван Иванов', 'ivan@example.com'),
-('Мария Петрова', 'maria@example.com');
-EOF
-```
-
-Установка и запуск композера
+В папке, где находится ваш `compose.yaml` файл выполните команду для запуска всех сервисов в фоновом режиме:
 ```shell
 docker compose up -d
 ```
+**Docker** начнёт скачивать необходимые образы и запускать контейнеры. Этот шаг может занять несколько минут.
 
-Проверяем
-```shell
-docker ps
-```
+параметр `-d` означает фоновый режим запуска контейнеров
 
-и
-```shell
-curl http://localhost:8082
-```
-
-Проверка состояния
-```shell
-docker compose ps
-```
-
-Доступ к сервису
-
-- phpMyAdmin: [URL: http://localhost:8081](http://localhost:8081)
-- Сервер: `mysql` (или `localhost:3306`)
-- Пользователь: `root`
-- Пароль: `rootpassword`
-
-### Управление проектом
-
-Проверить статус проекта
-```shell
-docker ps -a
-```
-
-Просмотр логов в реальном времени
-```shell
-docker compose logs -f mysql
-```
-
-`-f` в режиме ожидания (в режиме реального времени)
-
-Перезапустить
-```shell
-docker compose restart
-```
-
-Приостановить запущенный контейнер:
-```shell
-docker compose stop
-```
-
-Запустить приостановленный контейнер:
-```shell
-docker compose start
-```
-
-Показать конфигурацию текущего проекта:
-```shell
-docker compose config
-```
-
-Удалить проект
-
-Остановить контейнер с удалением данных
-```shell
-docker compose down -v
-```
-
-Проверить, не запущен ли удаляемый контейнер
-```shell
-docker ps -a
-```
-
-и
-
+Дождитесь полной загрузки. Убедиться, что всё работает, можно командой:
 ```shell
 docker compose ps -a
 ```
+Оба контейнера (`mysql` и `phpmyadmin`) должны иметь статус **Up**.
 
-Получить id образа
+### 4. Доступ к локальному сервису `phpMyAdmin`
+
+- phpMyAdmin: [URL: http://localhost:8083](http://localhost:8083)
+- Сервер: `mysql` (или `localhost:3306`)
+- Пользователь: `root`
+- Пароль: `root`
+
+![Screen](/content/Docker/DockerCompose/img/13.png)
+![Screen](/content/Docker/DockerCompose/img/14.png)
+
+### 5. Управление и полезные команды
+
+Находясь в папке `mysql-pma-app`
+
+1. Просмотр логов приложения **phpmyadmin** в реальном времени
 ```shell
-docker images
+docker compose logs -f phpmyadmin
+```
+`-f` в режиме ожидания (в режиме реального времени)
+
+Чтобы выйти из режима просмотра логов, необходимо выполнить `Ctrl+C` в терминале
+
+2. Просмотр логов базы данных **mysql** в реальном времени
+```shell
+docker compose logs -f mysql
+```
+Чтобы выйти из режима просмотра логов, необходимо выполнить `Ctrl+C` в терминале
+
+3. Приостановить запущенный контейнер:
+```shell
+docker compose stop
+```
+4. Запустить приостановленный контейнер:
+```shell
+docker compose start
+```
+5. Перезапустить
+```shell
+docker compose restart
+```
+6. Показать конфигурацию текущего проекта:
+```shell
+docker compose config
+```
+7. Вход в контейнер **MySQL** (имя контейнера можно узнать командой `docker compose ps`)
+```shell
+docker compose exec mysql bash
+```
+![Screen](/content/Docker/DockerCompose/img/15.png)
+Выйти из контейнера можно командой `exit`
+
+### 6. Удаление этого проекта
+
+Находясь в папке `mysql-pma-app`
+
+1. Остановка контейнеров этого проекта:
+```shell
+docker compose down
+```
+2. Остановка с полным удалением всех данных (базы данных и файлов) - опционально:
+```shell
+docker compose down --volumes
+```
+или для краткости:
+```shell
+docker compose down -v
+```
+(**Будьте осторожны:** эта команда удалит всё, что вы создали в проекте!).
+
+> ### Для полного удаления этого проекта, достаточно остановить его через `docker compose down` или `docker compose down --volumes`, удалить docker-образ, после чего удалить каталог проекта `mysql-pma-app`
+
+Выходим из каталога проекта
+```shell
+cd ..
+```
+и удаляем
+```shell
+rm -rf mysql-pma-app
 ```
 
-Удалить образ
-```shell
-docker rmi 1b3a22d17cb6
-```
+> Если вы обнаружили ошибку в этом тексте - сообщите пожалуйста автору!
