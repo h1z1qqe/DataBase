@@ -94,6 +94,7 @@ volumes:
 ```shell
 docker compose ls
 ```
+<<<<<<< HEAD
 или
 ```shell
 docker compose ls -a
@@ -101,11 +102,23 @@ docker compose ls -a
 Запуск всех сервисов в фоне
 ```shell
 docker compose up -d // Не сработала!
+=======
+Запуск всех сервисов в фоне
+```shell
+docker compose up -d
+>>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 ```
 Остановка всех сервисов
 ```shell
 docker compose down
 ```
+<<<<<<< HEAD
+=======
+Просмотр статуса
+```shell
+docker compose ps
+```
+>>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 Просмотр логов
 ```shell
 docker compose logs

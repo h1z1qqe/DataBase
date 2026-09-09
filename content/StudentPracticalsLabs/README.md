@@ -13,7 +13,11 @@
 - [Самостоятельно составить README.md с историей и описанием технологии Docker](/content/StudentPracticalsLabs/DockerHistory.md)
 - [Самостоятельная работа по созданию контейнеров из готовых образов](/content/StudentPracticalsLabs/ready_made_docker_image.md)
 - [Самостоятельная работа по созданию контейнеров с помощью Dockerfile](/content/StudentPracticalsLabs/DockerfileTasks.md)
+<<<<<<< HEAD
 - [Самостоятельная работа по командной строке Bash](/content/StudentPracticalsLabs/bashCLI.md)
+=======
+- []()
+>>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 - []()
 
 > Если вы обнаружили ошибку в этом тексте - сообщите пожалуйста автору!
