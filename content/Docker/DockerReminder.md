@@ -2,6 +2,7 @@
 
 ### Установка
 
+<<<<<<< HEAD
 **Windows 10–11**
 ```powershell
 winget install Docker.DockerDesktop
@@ -27,11 +28,67 @@ brew install --cask docker
 > В **macOS** и **Windows** этого делать не нужно — Docker Desktop работает через виртуальную машину.
 
 ---
+=======
+### Состояние
+
+```shell
+docker version
+```
+или кратко
+```shell
+docker --version
+```
+
+Получить сводку по диску Docker
+```shell
+docker system df
+```
+Получить сводку по всем томам
+```shell
+docker volume ls
+```
+Получить сводку по всем томам
+```shell
+docker volume ls
+```
+```shell
+# Список томов с размером
+docker system df -v
+```
+Очистить все ненужные тома
+```shell
+docker volume prune -a
+```
+и для кэша всех сборок
+```shell
+docker builder prune
+```
+
+### Образы
+>>>>>>> 8dddd8443f84106ee6d81f9a5521cacc9fe3490d
+
+Получить список всех образов
+```shell
+docker images
+```
+Удалить указанные образ
+```shell
+docker image rm имя_образа
+```
+или
+```shell
+docker rmi имя_образа
+```
+или удалить все образы
+```shell
+docker rmi $(docker images -a -q)
+```
 
 ### Основные команды
 
 #### Состояние и информация
 
+<<<<<<< HEAD
 Версия Docker:
 ```shell
 docker version
@@ -65,6 +122,30 @@ docker system df
 docker volume ls
 ```
 Список томов с размером:
+=======
+Получить список всех контейнеров, не зависимо от их состояния
+```shell
+docker ps -a
+```
+Получить список контейнеров, из которых выполнен выход
+```shell
+docker ps -a -f status=exited
+```
+
+#### Удаление контейнеров
+
+```shell
+docker rm $(docker ps -a -f status=exited -q)
+```
+
+###
+
+###
+
+### Использование ресурсов
+
+Показать подробную информацию об использовании дискового пространства:
+>>>>>>> 8dddd8443f84106ee6d81f9a5521cacc9fe3490d
 ```shell
 docker system df -v
 ```

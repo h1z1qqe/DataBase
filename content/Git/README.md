@@ -283,7 +283,11 @@ git branch
 ```shell
 git branch -r
 ```
+<<<<<<< HEAD
 или все ветки
+=======
+или
+>>>>>>> 8dddd8443f84106ee6d81f9a5521cacc9fe3490d
 ```shell
 git branch --all
 ```
