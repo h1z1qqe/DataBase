@@ -31,11 +31,7 @@
 
 - [Git](#git)
 - [WSL 2.0 для Windows 10/11](#wsl)
-<<<<<<< HEAD
 - [Docker](#docker)
-=======
-- [Docker](#docker-разработка-тестирование-и-запуск-различного-по)
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 - [Virtual Box/Hyper V](/content/Linux/README.md)
 - [Минимальные настройки VSCode](#vscode)
 - [Zed](#zed)
@@ -57,15 +53,11 @@
     ```shell
     winget install --id=zyedidia.micro -e
     ```
-<<<<<<< HEAD
     - Установить **Ubuntu WSL**:
     ```shell
     sudo apt update && sudo apt install micro xsel
     ```
     - Установить **Alt Linux 11**:
-=======
-    - Установитьв **Alt Linux 11**:
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
     ```shell
     su - -c "epmi --auto micro xclip xsel wl-clipboard"
     ```
@@ -81,11 +73,7 @@
 1. Создать публичный репозиторий с `README.md` на [gitflic.ru](gitflic.ru) или [Github](github.com)
 1. **Dia** [Dia](https://ru.wikipedia.org/wiki/Dia) - `winget install gnome.Dia` (опционально)
 1. **VSCode** [VSCode](https://code.visualstudio.com/) или в **PowerShell** - `winget install Microsoft.VisualStudioCode`
-<<<<<<< HEAD
 1. [Zed](https://zed.dev/?ref=taaft) - опционально - это высокопроизводительный, многопользовательский редактор кода с открытым исходным кодом со встроенным ИИ.
-=======
-1. [Zed](https://zed.dev/?ref=taaft) - это высокопроизводительный, многопользовательский редактор кода с открытым исходным кодом со встроенным ИИ.
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
     - Установка в **Windows** (PowerShell - Администратор):
     ```shell
     winget install -e --id ZedIndustries.Zed
@@ -100,21 +88,12 @@
     ```
 1. **Termux** (для Андроид) [Termux](https://termux.dev/en/) - опционально
 1. Компилятор **gcc** (Для Windows MSYS2) [MSYS2](https://www.msys2.org/) или [Clang](https://releases.llvm.org/download.html)  или в **PowerShell** - `winget install LLVM.LLVM` - опционально
-<<<<<<< HEAD
 1. **WSL 2.0** - установить **Ubuntu** - для **Docker** etc. [WSL 2.0 для Windows 10/11](#wsl)
 1. **Docker** - Для **Windows** [Загрузить и установить Docker-Desktop](https://www.docker.com/products/docker-desktop/) или в **PowerShell** - `winget install Docker.DockerDesktop`. [Для Linux](/content/Linux/README.md)
 1. **Virtual Box** - для установки **Alt Образование 11** - для контроллера домена (групповые политики)
 [Virtual Box](https://www.oracle.com/virtualization/virtualbox/) или в **PowerShell** - `winget install --id=Oracle.VirtualBox -e`
     - [Альт Образование 11 для виртуальной машины](https://download.basealt.ru/pub/distributions/ALTLinux/p11/images/education/x86_64/alt-education-11.0-x86_64.iso) - опционально!
 1. **Obsidian** - опционально - развитая система личных заметок. Второй мозг it-шника и программиста.
-=======
-1. **WSL 2.0** - установить **Ubuntu** - для **Docker** etc. [WSL 2.0 для Windows 10/11](#wsl-20-для-windows-1011-может-понадобиться-для-работы-с-docker-etc)
-1. **Docker** - Для **Windows** [Загрузить и установить Docker-Desktop](https://www.docker.com/products/docker-desktop/) или в **PowerShell** - `winget install Docker.DockerDesktop`. [Для Linux](/content/Linux/README.md)
-1. **Virtual Box** - для установки **Alt Образование 11** - для контроллера домена (групповые политики)
-[Virtual Box](https://www.oracle.com/virtualization/virtualbox/) или в **PowerShell** - `winget install --id=Oracle.VirtualBox -e`
-    - [Альт Образование 11 для виртуальной машины](https://download.basealt.ru/pub/distributions/ALTLinux/p11/images/education/x86_64/alt-education-11.0-x86_64.iso) - пока не обязательно!
-1. **Obsidian** - развитая система личных заметок. Второй мозг it-шника и программиста.
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
     - Установка в **Windows** (PowerShell - Администратор):
     ```shell
     winget install -e --id Obsidian.Obsidian
@@ -134,11 +113,7 @@
 Кроме этого, с помощью **WinGet** можно одновременно устанавливать сразу несколько выбранных приложений, например:
 
 ```shell
-<<<<<<< HEAD
 winget install Microsoft.Teams Git.Git Microsoft.VisualStudioCode Docker.DockerDesktop LLVM.LLVM gnome.Dia --id=zyedidia.micro -e
-=======
-winget install Microsoft.Teams Git.Git Microsoft.VisualStudioCode Docker.DockerDesktop LLVM.LLVM gnome.Dia
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 ```
 
 ---
@@ -149,9 +124,13 @@ winget install Microsoft.Teams Git.Git Microsoft.VisualStudioCode Docker.DockerD
 
 Открыть **Powersheell / Git-Bash / Terminal**
 
-Выбрать текстовый редактор **Micro** по умолчанию для **Windows/Linux**
+Выбрать текстовый редактор **VS Code** по умолчанию для **Windows/Linux**
 ```shell
-git config --global core.editor "micro"
+git config --global core.editor "code --wait"
+```
+В Windows может понадобиться другая команда:
+```powershell
+git config --global core.editor "'C:/Program Files/Microsoft VS Code/bin/code.cmd' --wait"
 ```
 Представиться системе **Git**:
 ```shell
@@ -191,7 +170,7 @@ git config --global user.email "rosa@mail.ru"
         - Перезагрузить компьютер
             - После перезагрузки найти **Ubuntu** можно из **Главного меню** и запустить её как обычное приложение **Windows**
             - Обновить **Ubuntu**: в терминале **Ubuntu** запустить команду `sudo apt list --upgradable -a && sudo apt update && sudo apt full-upgrade -y`
-            - Установить дополнительные утилиты в **Ubuntu**: в терминале **Ubuntu** запустить команду `sudo apt update && sudo apt install -y mc htop tree whois sl fastfetch wget curl inxi ncdu micro xclip xsel cmatrix`
+            - Установить дополнительные утилиты в **Ubuntu**: в терминале **Ubuntu** запустить команду `sudo apt update && sudo apt install -y mc htop tree whois sl fastfetch wget curl inxi ncdu micro xclip xsel cmatrix caca-utils lm-sensors nyancat net-tools`
             - Установить поддержку `g++` и `clang++` в терминале **Ubuntu**: `sudo apt update && sudo apt install -y build-essential git gdb ascii clang mingw-w64`
             - Проверить работу **Ubuntu** командами:
             - `uname -a` - краткая информация о системе
@@ -200,6 +179,8 @@ git config --global user.email "rosa@mail.ru"
             - `sl`
             - `ascii -d`
             - `inxi -F`
+            - `cmatrix`
+            - `cacafire`
     - Для старых версий **Windows 10**. **(Не обязательно!)** Если обновления **Ubuntu** завершаться ошибкой, то надо в **Windows PowerShell** (Администратор) задать версию **WSL 2** по умолчанию: `wsl --set-default-version 2`
 
 > Если компьютер не тянет для **WSL 2.0** и **Docker**, то можно попробовать выполнять задачи в [**Codespace**](https://github.com/features/codespaces) (но не желательно, т.к. очень ограниченный функционал!)
@@ -212,11 +193,7 @@ git config --global user.email "rosa@mail.ru"
 
 (Разработка, тестирование и запуск различного ПО)
 
-<<<<<<< HEAD
 1. [Сначал включите **WSL** на своём компьютере!](#wsl)
-=======
-1. [Сначал включите **WSL** на своём компьютере!](#wsl-20-для-windows-10-и-11)
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 1. [Загрузить и установить Docker-Desktop](https://www.docker.com/products/docker-desktop/) или командой в **PowerShell** `winget install Docker.DockerDesktop`
 1. Выполнять авторизацию в **Docker-Desktop** не обязательно (можно пропустить или авторизироваться через Google), указать `personal`;
 1. Перезагрузить компьютер;
@@ -267,6 +244,7 @@ git config --global user.email "rosa@mail.ru"
 - [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
   **Markdown Syntax Highlighting** - подсветка синтаксиса в **Mermaid**
 - [Mermaid Markdown Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=bpruitt-goddard.mermaid-markdown-syntax-highlighting)
+- [Mermaid Ink](https://marketplace.visualstudio.com/items?itemName=timmilesdw.mermaid-ink)
 - [YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
 - [XML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-xml)
 
@@ -289,11 +267,7 @@ code .
 - Горячие клавиши
     - `Ctrl+~` Открыть/Закрыть интегрированный Терминал
     - `Ctrl+/` Комментарии кода
-<<<<<<< HEAD
     - `Ctrl+`, Открыть настройки редактора
-=======
-    - Ctrl+, Открыть настройки редактора
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 - Шрифты
     - `Settings`->`Appeance` - Font Family
     - Шрифт - `Droid Sans Mono`,` `monospace`

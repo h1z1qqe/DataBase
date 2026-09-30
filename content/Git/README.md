@@ -62,17 +62,17 @@ git help
 
 **Сменить редактор по умолчанию:**
 
+На редактор кода **VS Code** (элементарный)
+```shell
+git config --global core.editor "code --wait"
+```
 На **Micro** (проще для новичков):
 ```shell
 git config --global core.editor "micro"
 ```
-На **Nano** (проще для новичков):
+На **Nano** (чуть сложней для новичков):
 ```shell
 git config --global core.editor "nano"
-```
-На **VS Code**:
-```shell
-git config --global core.editor "code --wait"
 ```
 
 **Представиться системе Git (выполняется однократно, после установки Git или перед 1-м коммитом)**
@@ -137,10 +137,6 @@ git restore README.md
 ### 7. Подготовить файлы к коммиту (добавить)
 
 > Никогда в разработке не используйте русские имена файлов и каталогов!
-<<<<<<< HEAD
-=======
-
->>>>>>> fd7cc734ea48bb57912888af35a9ce4acfc9eacc
 > Никогда в разработке не используйте пробелы и спецюсимволы в именах файлов и каталогов!
 
 добавить все файлы и папки, включая скрытые
@@ -169,8 +165,6 @@ git commit -a -m 'Update README.md'
 ```
 > Текст коммита лучше писать по-английски!
 
-> Текст коммита лучше писать по-английски!
-
 или
 ```shell
 git commit -a
@@ -193,7 +187,7 @@ git pull && git push
 ```
 или более "мягкий" вариант
 ```shell
-git getch && git push
+git fetch && git push
 ```
 или, если не получилось с 1-го раза запушить, то:
 ```shell
@@ -236,23 +230,18 @@ git log -p -3
 
 Показать краткую информацию о коммитах
 ```git log --stat```
-
 > чтобы выйти из списка коммитов, выполните **Q**
 
 Показать последний коммит кратко
 
 ```git log --stat -1```
-
 > чтобы выйти из списка коммитов, выполните **Q**
 
 показать несколько последних коммитов -2, -3 etc.
-
 ```git log --stat -2```
-
 > чтобы выйти из списка коммитов, выполните **Q**
 
 Показать хеши коммитов
-
 ```git log --oneline```
 
 > чтобы выйти из списка коммитов, выполните **Q**
@@ -263,18 +252,14 @@ git log -p -3
 ```shell
 git checkout 94120de
 ```
-
 Вернуться на последний коммит
-
 ```shell
 git switch -
 ```
-
 или
 ```shell
 git checkout master
 ```
-
 или вместо **master** укажите **main**
 
 Показать настройки текущего (локального) git-репозитория
@@ -285,9 +270,8 @@ git checkout master
 Показать информацию об удалённом репозитории
 
 Показать источники
-```git remote -v```
-
-```git remote show origin```
+- `git remote -v`
+- `git remote show origin`
 
 ### Работа с git-ветками
 
@@ -295,48 +279,46 @@ git checkout master
 ```shell
 git branch
 ```
-
 или показать все ветки (в т.ч. удалённые)
-
+```shell
+git branch -r
+```
+или все ветки
 ```shell
 git branch --all
 ```
-
 Создать новую локальную ветку
 ```shell
 git branch test
 ```
-
-где test - это имя создаваемой ветки
+где `test` - это имя создаваемой ветки
 
 Переключиться на другую ветку
 ```shell
 git switch test
 ```
-
 или
-
 ```shell
 git checkout test
 ```
-
 ещё можно создать новую ветку с автоматическим переходом в неё
 ```shell
 git checkout -b test
 ```
-
 Отправить новую ветку на удалённый сервер
 ```shell
 git push --set-upstream origin test
 ```
-
 где `test` -  имя отправляемой ветки
 
+Переключиться на предыдущую ветку
+```shell
+git switch -
+```
 Удалить локальную ветку
 ```shell
 git branch -d test
 ```
-
 Удалить удалённую ветку
 ```shell
 git push origin --delete test
@@ -350,9 +332,7 @@ git push origin --delete test
 ```shell
 git switch master
 ```
-
 и выполняем слияние 2-х веток в одну
-
 ```shell
 git merge anybranch
 ```
