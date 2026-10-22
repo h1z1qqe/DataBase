@@ -3,13 +3,18 @@
 ## Навигация по предмету
 
 Теория
+- [Данные и работа с ними](/content/Courses/Basics_database_design/content/Data.md)
+- [Вводная лекция по БД](/content/Courses/Basics_database_design/content/Begin.md)
 - [Классификация Баз Данных](/content/Courses/Basics_database_design/content/All_db.md)
 - [ER-диаграмы](/content/Courses/Basics_database_design/content/ER_dia.md)
 
 Практика
-- [Подробные уроки по Docker для начинающих](https://gitflic.ru/project/rurewa/altlinux/blob?file=content%2FDocker%2FDocker.md&branch=master&mode=markdown)
-- [Работа с базой данных внутри контейнера](/content/Basics_database_design/db_base.md)
 
+- Docker
+  - [Подробные уроки по Docker для начинающих](https://gitflic.ru/project/rurewa/altlinux/blob?file=content%2FDocker%2FDocker.md&branch=master&mode=markdown)
+  - [Работа с базой данных внутри контейнера](/content/Basics_database_design/db_base.md)
+- Базы Данных
+  - [Интерактивная работа с MySQL в изолированном окружении Docker](/content/Courses/Basics_database_design/content/Content/MySQL.md)
 ---
 
 Дисциплина **«Основы проектирования баз данных»** — это фундаментальный курс, который закладывает теоретическую и методологическую базу для всей последующей работы с базами данных. Если провести аналогию со строительством, то это курс «архитектурного проектирования» — здесь вы учитесь не класть кирпичи (писать SQL-запросы), а создавать чертежи, по которым эти кирпичи будут уложены правильно, надёжно и эффективно.

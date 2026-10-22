@@ -302,14 +302,11 @@ Sum 1..10 = 55
 
 Находясь в каталоге проекта:
 
-<<<<<<< HEAD
 На всякий случай переходим в каталог проекта:
 ```shell
 cd ~/hello-rust
 ```
 
-=======
->>>>>>> 8dddd8443f84106ee6d81f9a5521cacc9fe3490d
 1. Инициализация
 ```shell
 git init
@@ -365,12 +362,6 @@ git push -u origin main
 - Справа: `Package settings`
 - Внизу: `Danger Zone` → `Change visibility` → `Public`
 - Подтвердите
-<<<<<<< HEAD
-=======
-Откройте страницу пакета в режиме инкогнито (или в другом браузере, где вы не залогинены)
-
-`https://github.com/users/<ваш-username>/packages/container/hello-rust`
->>>>>>> 8dddd8443f84106ee6d81f9a5521cacc9fe3490d
 
 После этого `docker pull ghcr.io/<ВАШ-USERNAME>/hello-rust:latest` будет работать без авторизации — как `docker pull nginx`, например.
 

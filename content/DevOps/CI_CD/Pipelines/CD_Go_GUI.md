@@ -495,6 +495,17 @@ docker run --rm `
 
 > ⚠️ **Запустить его на хосте без графической среды не получится.** Если у вас есть рабочий стол — можно запустить. Если нет — используйте GitHub Actions или соберите под Windows/macOS.
 
+> ⚠️ Не забудьте удалить файл hello-gui-linux-x64, чтобы он не попал в репозиторий при запушивании
+
+Удалить артефакт после проверки
+```shell
+rm -f hello-gui-linux-x64
+```
+Проверить, что он не попадёт в коммит
+```shell
+git status --ignored | grep hello-gui
+```
+
 ### 5. Создание пустого репозитория на GitHub
 
 Создайте пустой репозиторий `hello-gui` на **GitHub**.
@@ -537,11 +548,15 @@ git push -u origin main
 
 ### 7. Первый запуск CI (без релиза)
 
-После `push` в `main` откройте вкладку **Actions** в **GitHub**. **Workflow** выполняется ~5–7 минут — Fyne долго компилирует GLFW из C-кода.
+После `push` в `main` откройте вкладку **Actions** в вашем репозитории
+на **GitHub**. Workflow выполняется ~5–7 минут — Fyne долго компилирует
+GLFW из C-кода. Вы увидите, как workflow запустился, а через несколько
+минут загорится **зелёная галочка** — значит, все шаги прошли успешно.
 
-Что произойдёт:
-- **Job test** запустится и пройдёт все проверки: `gofmt`, `go vet`, `go test`, `go build`
-- **Job release** будет пропущен — потому что `push` был в ветку, а не тег
+- **Job test** выполнится полностью: `gofmt`, `go vet`, `go test`, `go build`.
+- **Job release** будет пропущен — потому что `push` был в ветку, а не тег.
+
+⚠️ Если workflow стал **красным** — исправьте ошибки и запушьте снова.
 
 ### 8. Создание релиза
 
@@ -574,6 +589,12 @@ https://github.com/<ВАШ-USERNAME>/hello-gui/releases
 > ⚠️ **Если сборка на Windows упала с ошибкой `Cannot find path ... libpthread.dll.a`** — это проблема устаревшего action'а `egor-tensin/setup-mingw@v2`. В этом руководстве используется актуальный `msys2/setup-msys2@v2`, который работает стабильно.
 >
 > ⚠️ **Если сборка на Windows упала с ошибкой `gcc.exe not found`** — значит, MSYS2 установился не в `C:\msys64`, а в `$RUNNER_TEMP\msys64` (например, `D:\a\_temp\msys64`). Это поведение по умолчанию для action `msys2/setup-msys2@v2`. В этом руководстве путь к gcc определяется **динамически** — шаг `Set CC for Windows`.
+
+На GitHub есть отдельные раннеры для каждой ОС:
+
+* 🐧 Linux — Ubuntu, дешёвый и быстрый
+* 🪟 Windows — Windows Server, средняя цена
+* 🍎 macOS — физические Mac mini от Apple, самые дорогие
 
 ### 9. Скачивание и запуск бинарника
 
@@ -637,7 +658,53 @@ var version = "dev"
 
 > ✅ **Преимущество Go перед Python и .NET:** версия вообще **не хранится в коде** — она приходит из git-тега.
 
-#### 10.3. Проверьте форматирование
+#### 10.3. Обновите код приложения
+
+Откройте `main.go` в VS Code и замените содержимое на:
+```go
+package main
+
+import (
+	"fmt"
+
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/widget"
+)
+
+// version перезаписывается через -ldflags "-X main.version=..." во время сборки.
+var version = "dev"
+
+func main() {
+	a := app.New()
+	w := a.NewWindow("Приветствие " + version)
+
+	greeting := widget.NewLabel("Привет, мир! 👋")
+	greeting.TextStyle = fyne.TextStyle{Bold: true}
+	greeting.Alignment = fyne.TextAlignCenter
+
+	versionLabel := widget.NewLabel(fmt.Sprintf("Version: %s", version))
+	versionLabel.Alignment = fyne.TextAlignCenter
+
+	closeBtn := widget.NewButton("Закрыть", func() {
+		w.Close()
+	})
+
+	content := container.NewVBox(
+		container.NewPadded(greeting),
+		versionLabel,
+		container.NewCenter(closeBtn),
+	)
+
+	w.SetContent(content)
+	w.Resize(fyne.NewSize(320, 200))
+	w.CenterOnScreen()
+	w.ShowAndRun()
+}
+```
+
+#### 10.4. Проверьте форматирование
 
 CI запускает `gofmt -l` — если код не отформатирован, **workflow** упадёт. Проверьте локально **до push**:
 
@@ -659,7 +726,7 @@ docker run --rm \
 
 > ⚠️ **После этого закоммитьте изменения** — иначе CI всё равно упадёт на `gofmt -l`.
 
-#### 10.4. Проверьте тесты
+#### 10.5. Проверьте тесты
 
 ```shell
 docker run --rm \
@@ -685,11 +752,39 @@ PASS
 ok  	hello-gui	0.003s
 ```
 
-#### 10.5. Закоммитьте и запушьте
+#### 10.6. Сборка (smoke-check)
+
+```shell
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -e GOPATH=/tmp/go -e GOCACHE=/tmp/go-cache -e CGO_ENABLED=1 \
+  -v "$(pwd)":/app -v ~/.go-docker-cache:/tmp/go -w /app \
+  hello-gui-test \
+  go build -o /tmp/hello-gui . && echo "✅ Build OK"
+```
+Бинарник создаётся внутри контейнера в `/tmp/`. После --rm контейнер удаляется, и файл исчезает. Это **smoke-check**: проверяем, что бинарник собирается, а не получаем артефакт. Для получения артефакта — шаг **10.7**.
+
+#### 10.7. Проверить сборку локально:
+
+```shell
+cd ~/hello-gui
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -e HOME=/tmp \
+  -e GOPATH=/tmp/go \
+  -e GOCACHE=/tmp/go-cache \
+  -e CGO_ENABLED=1 \
+  -v "$(pwd)":/app \
+  -v ~/.go-docker-cache:/tmp/go \
+  -w /app \
+  hello-gui-test \
+  go build -ldflags='-s -w -X main.version=v0.2.0-local' -o hello-gui-linux-x64 .
+```
+
+#### 10.8. Закоммитьте и запушьте
 
 ```shell
 git add .
-git commit -m "feat: bump version to 0.2.0"
+git commit -m "feat: redesign UI with centered greeting version to 0.2.0."
 git push origin main
 ```
 
@@ -697,7 +792,13 @@ git push origin main
 - ✅ Job `test` пройдёт проверки
 - ⏭️ Job `release` будет **пропущен** (это push в ветку, не тег)
 
-#### 10.6. Создайте новый тег
+Вы увидите, как workflow запустился, а через несколько минут загорится **зелёная галочка** — значит, все шаги прошли успешно!
+
+Вид **Release list**:
+
+![Скрин ассетса](/content/img/accets.png)
+
+#### 10.9. Создайте новый тег
 
 ```shell
 git tag v0.2.0
@@ -709,7 +810,22 @@ git push origin v0.2.0
 - ✅ `release` — соберёт 3 бинарника параллельно
 - ✅ Создастся **новый Release** `v0.2.0`
 
-#### 10.7. Проверьте результат
+### Если упал Upload to Release
+
+> ⚠️ **Ошибка `Connect Timeout Error`**
+>
+> Иногда GitHub API отвечает слишком медленно, и upload падает с таймаутом.
+> Это **транзиентная** проблема — не ошибка вашего кода.
+>
+> **Причины:**
+> - Сетевой сбой на macOS-runner'е
+> - Три job'а одновременно пишут в один релиз (race condition)
+>
+> **Решение:**
+> 1. **Actions → упавший run → Re-run failed jobs** (перезапустить) — в 80% случаев помогает
+> 2. Если повторится — **Re-run all jobs**
+
+#### 10.10. Проверьте результат
 
 ```
 https://github.com/<ВАШ-USERNAME>/hello-gui/releases
@@ -733,7 +849,7 @@ chmod +x hello-gui
 
 В заголовке окна и в интерфейсе вы увидите `Version: v0.2.0` — значит, версия подставилась из тега.
 
-#### 10.8. Если ошиблись в теге
+#### 10.11. Если ошиблись в теге
 
 Например, создали `v0.2.0`, но в `main.go` забыли изменения.
 
@@ -763,36 +879,9 @@ git tag v0.2.0
 git push origin v0.2.0
 ```
 
-#### 10.9. Краткая шпаргалка
+Вид **Release list**:
 
-```shell
-# 1. Изменить код (откройте в VS Code)
-#    - main.go, logic.go
-
-# 2. Проверить формат и тесты
-docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
-  -e GOPATH=/tmp/go -e GOCACHE=/tmp/go-cache \
-  -v "$(pwd)":/app -v ~/.go-docker-cache:/tmp/go -w /app \
-  hello-gui-test \
-  sh -c "gofmt -w . && gofmt -l ."
-
-docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
-  -e GOPATH=/tmp/go -e GOCACHE=/tmp/go-cache \
-  -v "$(pwd)":/app -v ~/.go-docker-cache:/tmp/go -w /app \
-  hello-gui-test \
-  go test ./... -v
-
-# 3. Закоммитить и запушить
-git add .
-git commit -m "feat: bump version to 0.2.0"
-git push origin main
-
-# 4. Создать новый тег
-git tag v0.2.0
-git push origin v0.2.0
-
-# 5. Проверить: https://github.com/<username>/hello-gui/releases
-```
+![Скрин ассетса](/content/img/accets.png)
 
 ### Что вы освоили
 
