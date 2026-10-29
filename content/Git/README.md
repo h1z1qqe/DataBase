@@ -358,6 +358,51 @@ git rm -r --cached build/
 git commit -m "chore: remove build directory from tracking"
 ```
 
+### Тэги
+
+Получить локальные теги:
+```shell
+git tag
+```
+Получить удалённые теги на (remote)
+```shell
+git ls-remote --tags origin
+```
+Удалить локально
+```shell
+git tag -d v0.0.1
+git tag -d v0.1.0
+git tag -d v0.1.1
+# и т.д. — перечислите все, что не нужны
+```
+Удалить на GitHub
+```shell
+git push --delete origin v0.0.1
+git push --delete origin v0.1.0
+git push --delete origin v0.1.1
+```
+Создайть тег, например для нового релиза
+
+Подготовим изменения
+```shell
+git add .
+```
+Добавим коммит
+```shell
+git commit -m "feat: adaptive theme support"
+```
+Запушить
+```shell
+git push
+```
+```shell
+git tag v0.1.0
+```
+Запушить
+```shell
+git push origin v0.1.0
+```
+
 ### Дополнительная информация
 
 - [Pull Request](/content/Git/Pull_Request.md)
