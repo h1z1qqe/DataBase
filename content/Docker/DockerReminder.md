@@ -76,9 +76,16 @@ docker buildx du
 ```shell
 docker volume prune -a
 ```
+```shell
+docker image prune -a
+```
+Удаление всех остановленных контейнеров
+```shell
+docker container prune
+```
 Очистить кэш всех сборок:
 ```shell
-docker builder prune
+docker builder prune -a
 ```
 
 ---
