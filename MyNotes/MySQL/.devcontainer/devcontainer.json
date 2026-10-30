@@ -1,0 +1,19 @@
+{
+  // Название окружения — видно в интерфейсе Codespaces
+  "name": "MySQL Practice (Docker + utf8mb4)",
+
+  // Базовый образ: Ubuntu 24.04 с настроенным пользователем codespace
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  // Docker-in-Docker: ставит полноценный Docker внутрь Codespaces,
+  // чтобы можно было запускать контейнеры (в том числе наш MySQL)
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "enableNonRootDocker": true
+    }
+  },
+
+  // Выполняется при каждом старте Codespaces:
+  // ждёт Docker, поднимает контейнер MySQL, восстанавливает базу из дампа
+  "postStartCommand": "bash \"${containerWorkspaceFolder}/.devcontainer/restore.sh\""
+}
